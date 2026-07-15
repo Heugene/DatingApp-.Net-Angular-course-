@@ -3,7 +3,7 @@ using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace API
+namespace API.Controllers
 {
     //localhost:5001/api/members
     public class MembersController(AppDbContext context) : BaseApiController

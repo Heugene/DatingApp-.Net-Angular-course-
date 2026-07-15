@@ -1,6 +1,6 @@
 using System;
 
-namespace API;
+namespace API.DTOs;
 
 public class LoginDto
 {
