@@ -8,6 +8,6 @@ import { Router, RouterOutlet } from '@angular/router';
   styleUrl: './app.css',
   imports: [Nav, RouterOutlet]
 })
-export class App implements OnInit {
+export class App {
   protected router = inject(Router);
 }
