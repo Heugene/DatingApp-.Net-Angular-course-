@@ -18,6 +18,8 @@ public class Member
     public required string Country { get; set; }
 
     // Navigation property
+    public List<Photo> Photos { get; set; } = [];
+
     [ForeignKey(nameof(Id))]
     public AppUser User { get; set; } = null!;
 }
