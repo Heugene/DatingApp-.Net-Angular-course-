@@ -1,6 +1,4 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
-using SQLitePCL;
 
 namespace API.Controllers;
 

@@ -6,7 +6,6 @@ using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SQLitePCL;
 
 var builder = WebApplication.CreateBuilder(args);
 
