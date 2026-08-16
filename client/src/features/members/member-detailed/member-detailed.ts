@@ -2,10 +2,11 @@ import { Component, inject, OnInit, Signal, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, Observable, subscribeOn } from 'rxjs';
 import { Member } from '../../../types/member';
+import { AgePipe } from '../../../core/pipes/age-pipe';
 
 @Component({
   selector: 'app-member-detailed',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, AgePipe],
   templateUrl: './member-detailed.html',
   styleUrl: './member-detailed.css',
 })
