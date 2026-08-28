@@ -10,6 +10,9 @@
                 <h3 class="text-2xl font-semibold uppercase">Dating app</h3>
             </a>
         </div>
+        @if (busyService.busyRequestCount() > 0) {
+            <span class="loading loading-spinner text-accent"></span>
+        }
         <nav class="flex gap-3 my-2 uppercase text-lg text-white">
             @if (accountService.currentuser())
             {
