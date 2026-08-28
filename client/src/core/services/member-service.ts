@@ -4,12 +4,14 @@ import { environment } from '../../environments/environment';
 import { Member } from '../../types/member';
 import { Photo } from '../../types/photo';
 import { EditableMember } from '../../types/editableMember';
+import { tap } from 'rxjs';
 
 @Service()
 export class MemberService {
     private http = inject(HttpClient);
     private baseUrl = environment.apiUrl;
     editMode = signal(false);
+    member = signal<Member | null>(null);
 
     getMembers() {
         return this.http.get<Member[]>(this.baseUrl + 'members');
@@ -17,7 +19,11 @@ export class MemberService {
     }
 
     getMember(id: string) {
-        return this.http.get<Member>(this.baseUrl + 'members/' + id);
+        return this.http.get<Member>(this.baseUrl + 'members/' + id).pipe(
+            tap(member => {
+                this.member.set(member)
+            })
+        );
     }
 
     getMemberPhotos(id: string) {
