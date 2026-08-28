@@ -32,7 +32,7 @@
                     placeholder="Country"class="input w-full">
                 </label>
                 <div class="flex self-end">
-                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn btn-success" [disabled]="!editForm.dirty">Submit</button>
                 </div>
             </form>
         } @else {
