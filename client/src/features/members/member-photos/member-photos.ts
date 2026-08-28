@@ -20,7 +20,7 @@ export class MemberPhotos {
   constructor() {
     const memberId = this.route.parent?.snapshot.paramMap.get('id');
     if (memberId) {
-      this.photos$ = this.memberService.grtMemberPhotos(memberId);
+      this.photos$ = this.memberService.getMemberPhotos(memberId);
     }
   }
 

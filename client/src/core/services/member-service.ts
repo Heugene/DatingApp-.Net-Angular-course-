@@ -3,6 +3,7 @@ import { inject, Service, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../../types/member';
 import { Photo } from '../../types/photo';
+import { EditableMember } from '../../types/editableMember';
 
 @Service()
 export class MemberService {
@@ -19,7 +20,11 @@ export class MemberService {
         return this.http.get<Member>(this.baseUrl + 'members/' + id);
     }
 
-    grtMemberPhotos(id: string) {
+    getMemberPhotos(id: string) {
         return this.http.get<Photo[]>(this.baseUrl + 'members/' + id + '/photos');
+    }
+
+    updateMember(member: EditableMember){
+        return this.http.put(this.baseUrl + 'members', member);
     }
 }
