@@ -1,5 +1,5 @@
 import { Component, inject, input, OnInit, output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RegisterCreds, User } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service';
 import { JsonPipe } from '@angular/common';
@@ -22,10 +22,10 @@ export class Register implements OnInit {
 
   initializeForm() {
     this.registerForm = new FormGroup({
-      email: new FormControl(),
-      displayName: new FormControl(),
-      password: new FormControl(),
-      confirmPassword: new FormControl()
+      email: new FormControl("", [Validators.required, Validators.email]),
+      displayName: new FormControl("", Validators.required),
+      password: new FormControl("", [Validators.required, Validators.minLength(8), Validators.maxLength(12)]),
+      confirmPassword: new FormControl("", Validators.required)
     });
   }
 
