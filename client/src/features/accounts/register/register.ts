@@ -1,5 +1,5 @@
 import { Component, inject, input, OnInit, output } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { RegisterCreds, User } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service';
 import { JsonPipe } from '@angular/common';
@@ -12,22 +12,19 @@ import { TextInput } from '../../../shared/text-input/text-input';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class Register implements OnInit {
+export class Register {
   private accountService = inject(AccountService);
+  private formBuilder = inject(FormBuilder);
   cancelRegister = output<boolean>();
   protected creds = {} as RegisterCreds;
-  protected registerForm: FormGroup = new FormGroup({});
+  protected registerForm: FormGroup;
 
-  ngOnInit(): void {
-    this.initializeForm();
-  }
-
-  initializeForm() {
-    this.registerForm = new FormGroup({
-      email: new FormControl("", [Validators.required, Validators.email]),
-      displayName: new FormControl("", Validators.required),
-      password: new FormControl("", [Validators.required, Validators.minLength(8), Validators.maxLength(12)]),
-      confirmPassword: new FormControl("", [Validators.required, this.matchValues('password')])
+  constructor() {
+    this.registerForm = this.formBuilder.group({
+      email: ["", [Validators.required, Validators.email]],
+      displayName: ["", Validators.required],
+      password: ["", [Validators.required, Validators.minLength(8), Validators.maxLength(12)]],
+      confirmPassword: ["", [Validators.required, this.matchValues('password')]]
     });
     this.registerForm.controls['password'].valueChanges.subscribe(() => {
       this.registerForm.controls['confirmPassword'].updateValueAndValidity();
@@ -37,10 +34,10 @@ export class Register implements OnInit {
   matchValues(matchTo: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const parent = control.parent;
-      if(!parent) return null;
+      if (!parent) return null;
 
       const matchValue = parent.get(matchTo)?.value;
-      return control.value === matchValue ? null : {passwordMismatch: true}
+      return control.value === matchValue ? null : { passwordMismatch: true }
     }
   }
 
