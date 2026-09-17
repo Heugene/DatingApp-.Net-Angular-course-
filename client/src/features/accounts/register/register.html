@@ -2,19 +2,10 @@
     <div class="card-title justify-center text-3xl text-primary">Sign up</div>
     <div class="card-body w-full">
         <form [formGroup]="registerForm" class="flex flex-col gap-4 w-full" (ngSubmit)="register()">
-            <label class="floating-label">
-                <span>Email</span>
-                <input type="text" class="input w-full" formControlName="email" placeholder="Email">
-            </label>
-            
-            <label class="floating-label">
-                <span>Password</span>
-                <input type="password" class="input w-full" formControlName="password" placeholder="Password">
-            </label>
-            <label class="floating-label">
-                <span>Confirm password</span>
-                <input type="password" class="input w-full" formControlName="confirmPassword" placeholder="Confirm password">
-            </label>
+            <app-text-input label="Email" formControlName="email"/>
+            <app-text-input label="Display name" formControlName="displayName"/>
+            <app-text-input label="Password" formControlName="password" type="password"/>
+            <app-text-input label="Confirm password" formControlName="confirmPassword" type="password"/>
             <div class="flex items-center justify-end gap-3">
                 <button (click)="cancel()" type="button" class="btn">Cancel</button>
                 <button [disabled]="!registerForm.valid" class="btn btn-primary" type="submit">Register</button>

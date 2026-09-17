@@ -1,5 +1,5 @@
 <label class="floating-label text-left flex flex-col">
-    <span>Display name</span>
+    <span>{{label()}}</span>
     <input type="text" class="input w-full"
         [type]="type()"
         [class.input-error]="control.invalid && control.touched"
@@ -7,5 +7,17 @@
         [formControl]='control' [placeholder]="label()">
     @if (control.hasError('required') && control.touched) {
     <div class="validation-hint text-error text-xs">{{label()}} is required</div>
+    }
+    @if (control.hasError('email') && control.touched) {
+    <div class="validation-hint text-error text-xs">Invaild email address</div>
+    }
+    @if (control.hasError('minlength') && control.touched) {
+    <div class="validation-hint text-error text-xs">{{label()}} must be at least {{control.errors?.['minlength'].requiredLength}} characters</div>
+    }
+    @if (control.hasError('maxlength') && control.touched) {
+    <div class="validation-hint text-error text-xs">{{label()}} must be at most {{control.errors?.['maxlength'].requiredLength}} characters</div>
+    }
+    @if (control.hasError('passwordMismatch') && control.touched) {
+    <div class="validation-hint text-error text-xs">Passwords do not match</div>
     }
 </label>
