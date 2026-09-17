@@ -6,9 +6,12 @@
                 <span>Email</span>
                 <input type="text" class="input w-full" formControlName="email" placeholder="Email">
             </label>
-            <label class="floating-label">
+            <label class="floating-label text-left flex flex-col">
                 <span>Display name</span>
-                <input type="text" class="input w-full" formControlName="displayName" placeholder="Display name">
+                <input type="text" class="input w-full" [class.input-error]="registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched" formControlName="displayName" placeholder="Display name">
+                @if (registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched) {
+                    <div class="validation-hint text-error text-xs">Display name is required</div>
+                }
             </label>
             <label class="floating-label">
                 <span>Password</span>
