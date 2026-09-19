@@ -1,21 +1,44 @@
 <div class="card bg-base-100 w-1/2 mx-auto flex flex-col p-6 rounded-lg shadow-lg">
     <div class="card-title justify-center text-3xl text-primary">Sign up</div>
     <div class="card-body w-full">
-        <form [formGroup]="registerForm" class="flex flex-col gap-4 w-full" (ngSubmit)="register()">
-            <app-text-input label="Email" formControlName="email"/>
-            <app-text-input label="Display name" formControlName="displayName"/>
-            <app-text-input label="Password" formControlName="password" type="password"/>
-            <app-text-input label="Confirm password" formControlName="confirmPassword" type="password"/>
+
+        <ul class="steps">
+            <li class="step step-primary">Credentials</li>
+            <li class="step" [class.step-primary]="currentStep() === 2">Profile</li>
+        </ul>
+
+        @if (currentStep() === 1) {
+        <form [formGroup]="credentialsForm" class="flex flex-col gap-4 w-full steps">
+            <app-text-input class="mt-2" label="Email" formControlName="email" />
+            <app-text-input label="Display name" formControlName="displayName" />
+            <app-text-input label="Password" formControlName="password" type="password" />
+            <app-text-input label="Confirm password" formControlName="confirmPassword" type="password" />
             <div class="flex items-center justify-end gap-3">
                 <button (click)="cancel()" type="button" class="btn">Cancel</button>
-                <button [disabled]="!registerForm.valid" class="btn btn-primary" type="submit">Register</button>
+                <button [disabled]="!credentialsForm.valid" class="btn btn-primary" type="button"
+                    (click)="nextStep()">Next</button>
             </div>
         </form>
+        }
+
+        @if (currentStep() === 2) {
+        <form [formGroup]="profileForm" class="flex flex-col w-full gap-4 steps">
+            <div>Profile form goes here</div>
+
+            <div class="flex items-center justify-end gap-3">
+                <button (click)="prevStep()" type="button" class="btn">Back</button>
+                <button [disabled]="!profileForm.valid" class="btn btn-primary" type="button"
+                    (click)="register()">Register</button>
+            </div>
+        </form>
+        }
     </div>
 
     <div class="flex flex-col items-start px-3 w-full mockup-code text-lg">
-        <div>Form value: {{registerForm.value | json}}</div>
-        <div>Form status: {{registerForm.status | json}}</div>
+        <div>Creds form value: {{credentialsForm.value | json}}</div>
+        <div>Creds form status: {{credentialsForm.status | json}}</div>
+        <div>Profile form value: {{profileForm.value | json}}</div>
+        <div>Profile form status: {{profileForm.status | json}}</div>
     </div>
 
 </div>

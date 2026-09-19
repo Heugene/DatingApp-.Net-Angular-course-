@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, output } from '@angular/core';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { RegisterCreds, User } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service';
@@ -17,17 +17,27 @@ export class Register {
   private formBuilder = inject(FormBuilder);
   cancelRegister = output<boolean>();
   protected creds = {} as RegisterCreds;
-  protected registerForm: FormGroup;
+  protected credentialsForm: FormGroup;
+  protected profileForm: FormGroup;
+  protected currentStep = signal(1);
 
   constructor() {
-    this.registerForm = this.formBuilder.group({
+    this.credentialsForm = this.formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
       displayName: ["", Validators.required],
       password: ["", [Validators.required, Validators.minLength(8), Validators.maxLength(12)]],
       confirmPassword: ["", [Validators.required, this.matchValues('password')]]
     });
-    this.registerForm.controls['password'].valueChanges.subscribe(() => {
-      this.registerForm.controls['confirmPassword'].updateValueAndValidity();
+
+    this.profileForm = this.formBuilder.group({
+      gender: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      city: ['', Validators.required],
+      country: ['', Validators.required]
+    });
+
+    this.credentialsForm.controls['password'].valueChanges.subscribe(() => {
+      this.credentialsForm.controls['confirmPassword'].updateValueAndValidity();
     });
   }
 
@@ -42,7 +52,10 @@ export class Register {
   }
 
   register() {
-    console.log(this.registerForm.value);
+    if (this.profileForm.valid && this.credentialsForm.valid) {
+      const formData = {...this.profileForm.value, ...this.credentialsForm.value};
+      console.log('Form data: ', formData);
+    }
 
     // this.accountService.register(this.creds).subscribe({
     //   next: response => {
@@ -51,6 +64,16 @@ export class Register {
     //   },
     //   error: error => console.log(error)
     // });
+  }
+
+  nextStep() {
+    if(this.credentialsForm.valid) {
+      this.currentStep.update(prevStep => prevStep + 1);
+    }
+  }
+
+  prevStep() {
+    this.currentStep.update(prevStep => prevStep - 1);
   }
 
   cancel() {
