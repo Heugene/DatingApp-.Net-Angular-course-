@@ -11,6 +11,7 @@ export class TextInput implements ControlValueAccessor {
 
   label = input<string>('');
   type = input<string>('text');
+  maxDate = input<string>('');
 
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;
