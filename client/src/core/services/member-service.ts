@@ -6,6 +6,7 @@ import { Photo } from '../../types/photo';
 import { EditableMember } from '../../types/editableMember';
 import { tap } from 'rxjs';
 import { PaginatedResult } from '../../types/pagination';
+import { MemberParams } from '../../types/memberParams';
 
 @Service()
 export class MemberService {
@@ -14,10 +15,13 @@ export class MemberService {
     editMode = signal(false);
     member = signal<Member | null>(null);
 
-    getMembers(pageNumber = 1, pageSize = 5) {
+    getMembers(memberParams: MemberParams) {
         let params = new HttpParams();
-        params = params.append('pageNumber', pageNumber);
-        params = params.append('pageSize', pageSize);
+        params = params.append('pageNumber', memberParams.pageNumber);
+        params = params.append('pageSize', memberParams.pageSize);
+        params = params.append('minAge', memberParams.minAge);
+        params = params.append('maxAge', memberParams.maxAge);
+        if (memberParams.gender) params = params.append('gender', memberParams.gender);
         return this.http.get<PaginatedResult<Member>>(this.baseUrl + 'members', {params: params});
 
     }
