@@ -21,7 +21,7 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
     {
         var query = context.Members.AsQueryable();
 
-        return await PaginationHelper.CreateAsync(query, pagingParams.PageNubmer, pagingParams.PageSize);
+        return await PaginationHelper.CreateAsync(query, pagingParams.PageNumber, pagingParams.PageSize);
     }
 
     public async Task<IReadOnlyList<Photo>> GetPhotosForMemberAsync(string memberId)
