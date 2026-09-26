@@ -7,5 +7,5 @@ export type Pagination = {
 
 export type PaginatedResult<T> = {
     items: T[];
-    metaata: Pagination;
+    metadata: Pagination;
 }
