@@ -3,5 +3,6 @@ export class MemberParams {
     minAge = 18;
     maxAge = 100;
     pageNumber = 1;
-    pageSize = 10
+    pageSize = 10;
+    orderBy = 'lastActive';
 }
