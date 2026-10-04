@@ -44,7 +44,7 @@ namespace API.Controllers
         [HttpGet("list")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetCurrentMemberLikeIds()
         {
-            return Ok(likesRepository.GetCurrentMemberLikeIds(User.GetMemberId()));
+            return Ok(await likesRepository.GetCurrentMemberLikeIds(User.GetMemberId()));
         }
 
         [HttpGet]
