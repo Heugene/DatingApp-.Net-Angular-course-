@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,9 +49,11 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Member>>> GetMemberLikes(string predicate)
+        public async Task<ActionResult<PaginatedResult<Member>>> GetMemberLikes([FromQuery] LikesParams likesParams)
         {
-            return Ok(likesRepository.GetMemberLikes(predicate, User.GetMemberId()));
+            likesParams.MemberId = User.GetMemberId();
+            var members = likesRepository.GetMemberLikes(likesParams);
+            return Ok(members);
         }
     }
 }
