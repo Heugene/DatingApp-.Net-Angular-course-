@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +37,14 @@ namespace API.Controllers
             if (await messageRepository.SaveAllAsync()) return message.ToDto();
 
             return BadRequest("Failed to save the message");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<PaginatedResult<MessageDto>>> GetMessagesByContainer(
+            [FromQuery] MessageParams messageParams)
+        {
+            messageParams.MemberId = User.GetMemberId();
+            return await messageRepository.GetMessagesForMember(messageParams);
         }
     }
 }
