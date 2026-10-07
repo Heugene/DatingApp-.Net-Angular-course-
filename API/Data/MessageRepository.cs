@@ -46,9 +46,18 @@ namespace API.Data
             return await PaginationHelper.CreateAsync(messageQuery, messageParams.PageNumber, messageParams.PageSize);
         }
 
-        public Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string RecipientId)
+        public async Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string otherMemberId)
         {
-            throw new NotImplementedException();
+            await context.Messages
+                .Where(x => x.RecipientId == currentMemberId && x.SenderId == otherMemberId && x.ReadDateTime == null)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.ReadDateTime, DateTime.UtcNow));
+            
+            return await context.Messages
+                .Where(x => (x.RecipientId == currentMemberId && x.SenderId == otherMemberId) 
+                    || (x.RecipientId == otherMemberId && x.SenderId == currentMemberId))
+                .OrderBy(x => x.SentDateTime)
+                .Select(MessageExtensions.ToDtoProjection())
+                .ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()
