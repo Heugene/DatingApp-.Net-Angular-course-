@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using API.Data;
+using API.DTOs;
+using API.Entities;
+using API.Extensions;
+using API.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    public class MessagesController(IMessageRepository messageRepository, IMemberRepository memberRepository) : BaseApiController
+    {
+        [HttpPost]
+        public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto createMessageDto)
+        {
+            var sender = await memberRepository.GetMemberByIdAsync(User.GetMemberId());
+            var recipient = await memberRepository.GetMemberByIdAsync(createMessageDto.RecipientId);
+
+            if (sender is null || recipient is null || sender.Id == createMessageDto.RecipientId)
+            {
+                return BadRequest("Cannot send this message");
+            }
+
+            var message = new Message
+            {
+                SenderId = sender.Id,
+                RecipientId = recipient.Id,
+                Content = createMessageDto.Content
+            };
+
+            messageRepository.AddMessage(message);
+
+            if (await messageRepository.SaveAllAsync()) return message.ToDto();
+
+            return BadRequest("Failed to save the message");
+        }
+    }
+}
