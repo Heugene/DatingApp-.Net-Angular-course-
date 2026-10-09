@@ -4,10 +4,12 @@ import { MemberService } from '../../../core/services/member-service';
 import { single } from 'rxjs';
 import { Messages } from '../../messages/messages';
 import { Message } from '../../../types/message';
+import { DatePipe } from '@angular/common';
+import { TimeAgoPipe } from '../../../core/pipes/time-ago-pipe';
 
 @Component({
   selector: 'app-member-messages',
-  imports: [],
+  imports: [DatePipe, TimeAgoPipe],
   templateUrl: './member-messages.html',
   styleUrl: './member-messages.css',
 })
@@ -24,7 +26,9 @@ export class MemberMessages implements OnInit {
     const memberId = this.memberService.member()?.id;
     if(memberId) {
       this.messageService.getMessageThread(memberId).subscribe({
-        next: messages => this.messages.set(messages)
+        next: messages => this.messages.set(messages.map(message => ({
+          ...message, currentUserSender: message.senderId != memberId
+        })))
       });
     }
   }

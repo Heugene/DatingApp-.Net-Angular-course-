@@ -9,4 +9,5 @@ export type Message = {
   content: string
   sentDateTime: string
   readDateTime?: string
+  currentUserSender?: boolean
 }
