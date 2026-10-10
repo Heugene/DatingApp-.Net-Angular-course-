@@ -37,8 +37,8 @@ namespace API.Data
 
             query = messageParams.Container switch
             {
-                "Outbox" => query.Where(x => x.SenderId == messageParams.MemberId),
-                _ => query.Where(x => x.RecipientId == messageParams.MemberId)
+                "Outbox" => query.Where(x => x.SenderId == messageParams.MemberId && !x.SenderDeleted),
+                _ => query.Where(x => x.RecipientId == messageParams.MemberId && !x.RecipientDeleted)
             };
 
             var messageQuery = query.Select(MessageExtensions.ToDtoProjection());
@@ -53,8 +53,8 @@ namespace API.Data
                 .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.ReadDateTime, DateTime.UtcNow));
             
             return await context.Messages
-                .Where(x => (x.RecipientId == currentMemberId && x.SenderId == otherMemberId) 
-                    || (x.RecipientId == otherMemberId && x.SenderId == currentMemberId))
+                .Where(x => (x.RecipientId == currentMemberId && !x.RecipientDeleted && x.SenderId == otherMemberId) 
+                    || (x.RecipientId == otherMemberId && !x.SenderDeleted && x.SenderId == currentMemberId))
                 .OrderBy(x => x.SentDateTime)
                 .Select(MessageExtensions.ToDtoProjection())
                 .ToListAsync();
