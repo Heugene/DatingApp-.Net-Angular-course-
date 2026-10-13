@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Entities;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,32 @@ namespace API.Controllers
             }
 
             return Ok(userList);
+        }
+
+        [Authorize (Policy = "RequireAdminRole")]
+        [HttpPost("edit-roles/{userId}")]
+        public async Task<ActionResult<IList<string>>> EditRoles(string userId, [FromQuery]string roles)
+        {
+            if(string.IsNullOrEmpty(userId)) return BadRequest("Invalid user id");
+            if(string.IsNullOrEmpty(roles)) return BadRequest("You must select at least one role");
+
+            var selectedRoles = roles.Split(',').ToArray();
+
+            var user = await userManager.FindByIdAsync(userId);
+
+            if(user is null) return BadRequest("Could not retrieve user");
+
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            var result = await userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+
+            if (!result.Succeeded) return BadRequest("Failed to add to roles");
+
+            result = await userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+
+            if (!result.Succeeded) return BadRequest("Failed to remove from roles");
+
+            return Ok(await userManager.GetRolesAsync(user));
         }
 
         [Authorize (Policy = "ModeratePhotoRole")]
