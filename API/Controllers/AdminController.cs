@@ -17,7 +17,7 @@ namespace API.Controllers
         [HttpGet("users-with-roles")]
         public async Task<ActionResult> GetUsersWithRoles()
         {   
-            var users = await userManager.Users.ToListAsync();
+            var users = await userManager.Users.OrderBy(user => user.Email).ToListAsync();
             var userList = new List<object>(); 
 
             // this method returns anonymous objects, which is fine, but it comes at cost of loosing type safety
