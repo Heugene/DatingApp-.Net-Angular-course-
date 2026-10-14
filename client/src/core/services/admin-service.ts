@@ -1,4 +1,14 @@
-import { Service } from '@angular/core';
+import { inject, Service } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { User } from '../../types/user';
 
 @Service()
-export class AdminService {}
+export class AdminService {
+    baseUrl = environment.apiUrl;
+    private http = inject(HttpClient);
+
+    getUserWithRoles() {
+        return this.http.get<User[]>(this.baseUrl + 'admin/users-with-roles');
+    }
+}
