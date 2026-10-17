@@ -29,7 +29,7 @@ export class MessageService {
 
         this.hubConnection.on('RecieveMessageThread', (messages: Message[]) => {
             this.messageThread.set(messages.map(message => ({
-                ...message, currentUserSender: message.senderId != otherUserId
+                ...message, currentUserSender: message.senderId !== otherUserId
             })))
         });
     }
