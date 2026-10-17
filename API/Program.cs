@@ -29,6 +29,7 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<LogUserActivity>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<PresenceTracker>();
 
 builder.Services.AddIdentityCore<AppUser>(opt =>
 {
