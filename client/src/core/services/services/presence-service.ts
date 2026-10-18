@@ -3,7 +3,9 @@ import { environment } from '../../../environments/environment';
 import { ToastService } from '../toast-service';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { User } from '../../../types/user';
+import { Message } from '../../../types/message';
 import { email } from '@angular/forms/signals';
+import { Messages } from '../../../features/messages/messages';
 
 @Service()
 export class PresenceService {
@@ -33,6 +35,10 @@ export class PresenceService {
 
         this.hubConnection.on('GetOnlineUsers', userIds => {
             this.onlineUsers.set(userIds);
+        })
+
+        this.hubConnection.on('NewMessageRecieved', (message: Message) => {
+            this.toast.info(message.senderDisplayName + ' sent you a new message');
         })
     }
 

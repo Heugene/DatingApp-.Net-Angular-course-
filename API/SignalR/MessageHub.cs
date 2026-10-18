@@ -12,7 +12,8 @@ using Microsoft.Extensions.Primitives;
 
 namespace API.SignalR
 {
-    public class MessageHub(IMessageRepository messageRepository, IMemberRepository memberRepository) : Hub
+    public class MessageHub(IMessageRepository messageRepository, 
+        IMemberRepository memberRepository, IHubContext<PresenceHub> presenceHub) : Hub
     {
         public override async Task OnConnectedAsync()
         {
@@ -49,8 +50,9 @@ namespace API.SignalR
 
             var groupName = GetGroupName(sender.Id, recipient.Id);
             var group = await messageRepository.GetMessageGroup(groupName);
+            var isRecipientInGroup = group is not null && group.Connections.Any(x => x.UserId == message.RecipientId);
 
-            if (group is not null && group.Connections.Any(x => x.UserId == message.RecipientId))
+            if (isRecipientInGroup)
             {
                 message.ReadDateTime = DateTime.UtcNow;
             }
@@ -60,6 +62,11 @@ namespace API.SignalR
             if (await messageRepository.SaveAllAsync())
             {
                 await Clients.Group(groupName).SendAsync("NewMessage", message.ToDto());
+                var connections = await PresenceTracker.GetConnectionsForUser(recipient.Id);
+                if (connections is not null && connections.Count > 0 && !isRecipientInGroup)
+                {
+                    await presenceHub.Clients.Clients(connections).SendAsync("NewMessageRecieved", message.ToDto());
+                }
             }
         }
 
