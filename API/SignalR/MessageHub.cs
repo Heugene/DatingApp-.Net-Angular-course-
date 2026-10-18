@@ -23,6 +23,7 @@ namespace API.SignalR
             
             var groupName = GetGroupName(GetUserId(), otherUserId);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await AddToGroup(groupName);
 
             var messages = await messageRepository.GetMessageThread(GetUserId(), otherUserId);
 
@@ -46,24 +47,48 @@ namespace API.SignalR
                 Content = createMessageDto.Content
             };
 
+            var groupName = GetGroupName(sender.Id, recipient.Id);
+            var group = await messageRepository.GetMessageGroup(groupName);
+
+            if (group is not null && group.Connections.Any(x => x.UserId == message.RecipientId))
+            {
+                message.ReadDateTime = DateTime.UtcNow;
+            }
+
             messageRepository.AddMessage(message);
 
             if (await messageRepository.SaveAllAsync())
             {
-                var group = GetGroupName(sender.Id, recipient.Id);
-                await Clients.Group(group).SendAsync("NewMessage", message.ToDto());
+                await Clients.Group(groupName).SendAsync("NewMessage", message.ToDto());
             }
         }
 
-        public override Task OnDisconnectedAsync(Exception? exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            return base.OnDisconnectedAsync(exception);
+            await messageRepository.RemoveConnection(Context.ConnectionId);
+            await base.OnDisconnectedAsync(exception);
+        }
+
+        private async Task<bool> AddToGroup(string groupName)
+        {
+            var group = await messageRepository.GetMessageGroup(groupName);
+            var connection = new Connection(Context.ConnectionId, GetUserId());
+
+            if (group is null)
+            {
+                group = new Group(groupName);
+                messageRepository.AddGroup(group);
+            }
+
+            group.Connections.Add(connection);
+
+            return await messageRepository.SaveAllAsync();
         }
 
         private static string GetGroupName(string? caller, string? other)
         {
             var stringCompare = string.CompareOrdinal(caller, other) < 0;
-            return stringCompare ? $"{caller}={other}" : $"{other}={caller}";
+            return stringCompare ? $"{caller}-{other}" : $"{other}-{caller}";
         }
 
         private string GetUserId()
