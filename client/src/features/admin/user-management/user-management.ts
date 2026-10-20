@@ -3,12 +3,12 @@ import { AdminService } from '../../../core/services/admin-service';
 import { User } from '../../../types/user';
 
 @Component({
-  selector: 'app-user-managegment',
+  selector: 'app-user-management',
   imports: [],
-  templateUrl: './user-managegment.html',
-  styleUrl: './user-managegment.css',
+  templateUrl: './user-management.html',
+  styleUrl: './user-management.css',
 })
-export class UserManagegment implements OnInit {
+export class UserManagement implements OnInit {
   @ViewChild('rolesModal') rolesModal!: ElementRef<HTMLDialogElement>;
   private adminService = inject(AdminService);
   protected users = signal<User[]>([]);

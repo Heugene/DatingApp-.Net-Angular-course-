@@ -2,12 +2,12 @@ import { NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { AccountService } from '../../core/services/account-service';
 import { validate } from '@angular/forms/signals';
-import { UserManagegment } from './user-managegment/user-managegment';
-import { PhotoManagegment } from './photo-managegment/photo-managegment';
+import { PhotoManagement } from './photo-management/photo-management';
+import { UserManagement } from './user-management/user-management';
 
 @Component({
   selector: 'app-admin',
-  imports: [UserManagegment, PhotoManagegment],
+  imports: [UserManagement, PhotoManagement],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
