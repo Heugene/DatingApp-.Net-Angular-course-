@@ -84,6 +84,8 @@ app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/messages");
 
+app.MapFallbackToController("Index", "Fallback");
+
 SeedDB();
 
 app.Run();
