@@ -52,7 +52,7 @@ namespace API.Controllers
         public async Task<ActionResult<PaginatedResult<Member>>> GetMemberLikes([FromQuery] LikesParams likesParams)
         {
             likesParams.MemberId = User.GetMemberId();
-            var members = unitOfWork.likesRepository.GetMemberLikes(likesParams);
+            var members = await unitOfWork.likesRepository.GetMemberLikes(likesParams);
             return Ok(members);
         }
     }
