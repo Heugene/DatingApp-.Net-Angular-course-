@@ -46,7 +46,7 @@ export class Lists implements OnInit {
   loadLikes() {
     this.likesService.getLikes(this.predicate, this.pageNumber, this.pageSize).subscribe({
       next: response => {
-        let result = (response as any).result as PaginatedResult<Member>;
+        let result = response as PaginatedResult<Member>;
         this.paginatedResult.set(result);
       }
     });
